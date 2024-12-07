@@ -45,6 +45,18 @@ class MainActivity : AppCompatActivity() {
         // TODO set background color for cells
         // TODO set background color for snake
         // TODO move snake in one direction
+        for (x in 0 until tileSize) {
+            for (y in 0 until tileSize) {
+                var color = Color.BLACK
+                if (x == snakeX && y == snakeY) {
+                    color = Color.WHITE
+                }
+
+                rows[y].getChildAt(x).setBackgroundColor(color)
+            }
+        }
+
+        snakeY--
     }
 
     private fun initBoard() {
@@ -75,5 +87,7 @@ class MainActivity : AppCompatActivity() {
                 row.addView(cell)
             }
         }
+
+        rows.reverse()
     }
 }
