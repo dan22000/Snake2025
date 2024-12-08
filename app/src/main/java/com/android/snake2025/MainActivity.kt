@@ -7,14 +7,12 @@ import android.os.Looper
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import java.util.Random
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var layoutMain: LinearLayout
     private val rows: MutableList<LinearLayout> = ArrayList()
-
     private val tileSize = 20
     private var snakeX = tileSize / 2
     private var snakeY = tileSize / 2
@@ -26,7 +24,6 @@ class MainActivity : AppCompatActivity() {
 
         layoutMain = findViewById(R.id.main)
 
-        // TODO generate game board according to tileSize in code
         initBoard()
         gameLoop()
     }
@@ -56,16 +53,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        snakeY--
+        snakeX--
     }
 
     private fun initBoard() {
         for (i in 0 until tileSize) {
             val row = LinearLayout(this)
-            val layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            )
+            val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             layoutParams.weight = 1f
             row.layoutParams = layoutParams
 
@@ -74,16 +68,7 @@ class MainActivity : AppCompatActivity() {
 
             for (j in 0 until tileSize) {
                 val cell = View(this)
-                val layoutParamsCell = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                layoutParamsCell.weight = 1f
-                cell.layoutParams = layoutParamsCell
-
-                val random = Random()
-                val color = Color.argb(255, random.nextInt(256), random.nextInt(256),random.nextInt(256))
-                cell.setBackgroundColor(color)
+                cell.layoutParams = layoutParams
                 row.addView(cell)
             }
         }
