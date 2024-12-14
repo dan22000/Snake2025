@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Snake2025</string>
+    <string name="score">Score: %s</string>
+    <string name="score_game_over">Score: %s Game Over!</string>
 </resources>

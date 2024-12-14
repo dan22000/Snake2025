@@ -9,6 +9,7 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlin.math.atan2
 import java.util.Random
@@ -17,16 +18,18 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
 
     private lateinit var layoutMain: LinearLayout
     private lateinit var gestureDetector: GestureDetector
+    private lateinit var layoutScore: TextView
 
     private val rows: MutableList<LinearLayout> = ArrayList()
     private val tileSize = 20
     private var snakeX = tileSize / 2
     private var snakeY = tileSize / 2
+    private var snakeSpeed = 200L
     private var snakeDirectionX = 0
     private var snakeDirectionY = 0
     private var appleX = 0
     private var appleY = 0
-
+    private var score = 0
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +38,7 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
         setContentView(R.layout.activity_main)
 
         gestureDetector = GestureDetector(this, this)
+        layoutScore = findViewById(R.id.score)
         layoutMain = findViewById(R.id.main)
         layoutMain.setOnTouchListener(this)
 
@@ -52,9 +56,11 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
                 snakeY += snakeDirectionY
 
                 if (!isGameOver()) {
+                    // TODO Display and update score
+                    // TODO Increase score and snake speed on apple collision
                     updateApple()
                     drawBoard()
-                    mainHandler.postDelayed(this, 500)
+                    mainHandler.postDelayed(this, snakeSpeed)
                 }
             }
         })
@@ -63,6 +69,12 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
     private fun updateApple() {
         if (appleX == snakeX && appleY == snakeY) {
             assignRandomApplePosition()
+            score += 5
+            if (score % 20 == 0) {
+                snakeSpeed -= 10
+            }
+
+            layoutScore.text = String.format(getString(R.string.score), score.toString())
         }
     }
 
@@ -88,7 +100,7 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
     private fun drawBoard() {
         for (x in 0 until tileSize) {
             for (y in 0 until tileSize) {
-                var color = Color.BLACK
+                var color = getColor(R.color.blue)
                 if (x == appleX && y == appleY) {
                     color = Color.GREEN
                 } else if (x == snakeX && y == snakeY) {
