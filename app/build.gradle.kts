@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.android.snake2025"
-        minSdk = 24
+        minSdk = 31
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
