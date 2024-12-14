@@ -1,5 +1,6 @@
 package com.android.snake2025
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -10,7 +11,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import kotlin.math.atan2
-
+import java.util.Random
 
 class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.OnGestureListener {
 
@@ -23,7 +24,11 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
     private var snakeY = tileSize / 2
     private var snakeDirectionX = 0
     private var snakeDirectionY = 0
+    private var appleX = 0
+    private var appleY = 0
 
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -33,6 +38,8 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
         layoutMain = findViewById(R.id.main)
         layoutMain.setOnTouchListener(this)
 
+        // TODO assignRandomApplePosition
+        assignRandomApplePosition()
         initBoard()
         gameLoop()
     }
@@ -45,11 +52,24 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
                 snakeY += snakeDirectionY
 
                 if (!isGameOver()) {
+                    updateApple()
                     drawBoard()
                     mainHandler.postDelayed(this, 500)
                 }
             }
         })
+    }
+
+    private fun updateApple() {
+        if (appleX == snakeX && appleY == snakeY) {
+            assignRandomApplePosition()
+        }
+    }
+
+    private fun assignRandomApplePosition() {
+        val random = Random()
+        appleX = random.nextInt(tileSize)
+        appleY = random.nextInt(tileSize)
     }
 
     private fun isGameOver(): Boolean {
@@ -69,7 +89,9 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
         for (x in 0 until tileSize) {
             for (y in 0 until tileSize) {
                 var color = Color.BLACK
-                if (x == snakeX && y == snakeY) {
+                if (x == appleX && y == appleY) {
+                    color = Color.GREEN
+                } else if (x == snakeX && y == snakeY) {
                     color = Color.WHITE
                 }
 
