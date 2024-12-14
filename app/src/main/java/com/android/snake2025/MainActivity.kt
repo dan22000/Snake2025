@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
     private val snakeTiles = mutableListOf<SnakeTile>()
     private val rows: MutableList<LinearLayout> = ArrayList()
     private val tileSize = 20
+
     private var snakeX = tileSize / 2
     private var snakeY = tileSize / 2
     private var snakeSpeed = 200L
@@ -143,10 +144,6 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
                 }
 
                 rows[y].getChildAt(x).setBackgroundColor(color)
-
-                if (snakeTiles.size > snakeLength) {
-                    snakeTiles.removeAt(0)
-                }
             }
         }
 
@@ -155,6 +152,10 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
         }
 
         snakeTiles.add(SnakeTile(snakeX, snakeY))
+
+        if (snakeTiles.size > snakeLength) {
+            snakeTiles.removeAt(0)
+        }
     }
 
     /**
