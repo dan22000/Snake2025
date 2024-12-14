@@ -42,7 +42,6 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
         layoutMain = findViewById(R.id.main)
         layoutMain.setOnTouchListener(this)
 
-        // TODO assignRandomApplePosition
         assignRandomApplePosition()
         initBoard()
         gameLoop()
@@ -56,11 +55,11 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
                 snakeY += snakeDirectionY
 
                 if (!isGameOver()) {
-                    // TODO Display and update score
-                    // TODO Increase score and snake speed on apple collision
                     updateApple()
                     drawBoard()
                     mainHandler.postDelayed(this, snakeSpeed)
+                } else {
+                    layoutScore.text = String.format(getString(R.string.score_game_over), score.toString())
                 }
             }
         })
