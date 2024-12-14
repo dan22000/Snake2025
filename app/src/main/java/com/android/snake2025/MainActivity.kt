@@ -44,10 +44,25 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
                 snakeX += snakeDirectionX
                 snakeY += snakeDirectionY
 
-                drawBoard()
-                mainHandler.postDelayed(this, 500)
+                if (!isGameOver()) {
+                    drawBoard()
+                    mainHandler.postDelayed(this, 500)
+                }
             }
         })
+    }
+
+    private fun isGameOver(): Boolean {
+        if (snakeDirectionX == 0 && snakeDirectionY == 0) {
+            return false
+        }
+
+        // Check for wall collision
+        if (snakeX < 0 || snakeX >= tileSize || snakeY < 0 || snakeY >= tileSize) {
+            return true
+        }
+
+        return false
     }
 
     private fun drawBoard() {
