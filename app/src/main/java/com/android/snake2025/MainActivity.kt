@@ -20,11 +20,13 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
     private lateinit var gestureDetector: GestureDetector
     private lateinit var layoutScore: TextView
 
+    private val snakeTiles = mutableListOf<SnakeTile>()
     private val rows: MutableList<LinearLayout> = ArrayList()
     private val tileSize = 20
     private var snakeX = tileSize / 2
     private var snakeY = tileSize / 2
     private var snakeSpeed = 200L
+    private var snakeLength = 0
     private var snakeDirectionX = 0
     private var snakeDirectionY = 0
     private var appleX = 0
@@ -68,6 +70,7 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
     private fun updateApple() {
         if (appleX == snakeX && appleY == snakeY) {
             assignRandomApplePosition()
+            snakeLength++
             score += 5
             if (score % 20 == 0) {
                 snakeSpeed -= 10
@@ -107,8 +110,18 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
                 }
 
                 rows[y].getChildAt(x).setBackgroundColor(color)
+
+                if (snakeTiles.size > snakeLength) {
+                    snakeTiles.removeFirst()
+                }
             }
         }
+
+        for(snakeTile in snakeTiles) {
+            rows[snakeTile.y].getChildAt(snakeTile.x).setBackgroundColor(Color.WHITE)
+        }
+
+        snakeTiles.add(SnakeTile(snakeX, snakeY))
     }
 
     private fun initBoard() {
