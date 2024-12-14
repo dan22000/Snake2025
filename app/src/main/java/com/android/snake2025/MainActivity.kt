@@ -96,6 +96,13 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
             return true
         }
 
+        // Check for tail collision
+        for (snakeTile in snakeTiles) {
+            if (snakeTile.x == snakeX && snakeTile.y == snakeY) {
+                return true
+            }
+        }
+
         return false
     }
 
