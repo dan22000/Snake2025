@@ -49,6 +49,10 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
         gameLoop()
     }
 
+    /**
+     * Performs the main tasks of the game and draws objects.
+     * This method is called multiple times a second.
+     */
     private fun gameLoop() {
         val mainHandler = Handler(Looper.getMainLooper())
         mainHandler.post(object  : Runnable {
@@ -67,6 +71,9 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
         })
     }
 
+    /**
+     * This method checks for an apple collision.
+     */
     private fun updateApple() {
         if (appleX == snakeX && appleY == snakeY) {
             assignRandomApplePosition()
@@ -80,13 +87,20 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
         }
     }
 
+    /**
+     * Assigns the apple a random position on the screen.
+     */
     private fun assignRandomApplePosition() {
         val random = Random()
         appleX = random.nextInt(tileSize)
         appleY = random.nextInt(tileSize)
     }
 
+    /**
+     * This method checks if there is a wall or a tail collision.
+     */
     private fun isGameOver(): Boolean {
+        // Do not check at game start, when user has not pressed any keys.
         if (snakeDirectionX == 0 && snakeDirectionY == 0) {
             return false
         }
@@ -106,6 +120,9 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
         return false
     }
 
+    /**
+     * Changes the background color of all tiles.
+     */
     private fun drawBoard() {
         for (x in 0 until tileSize) {
             for (y in 0 until tileSize) {
@@ -119,7 +136,7 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
                 rows[y].getChildAt(x).setBackgroundColor(color)
 
                 if (snakeTiles.size > snakeLength) {
-                    snakeTiles.removeFirst()
+                    snakeTiles.removeAt(0)
                 }
             }
         }
@@ -131,6 +148,10 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
         snakeTiles.add(SnakeTile(snakeX, snakeY))
     }
 
+    /**
+     * Creates Linear Layouts according to the tileSize val.
+     * Adds all layouts to rows Array List to create a game board.
+     */
     private fun initBoard() {
         for (i in 0 until tileSize) {
             val row = LinearLayout(this)
@@ -151,6 +172,7 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
         rows.reverse()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         return gestureDetector.onTouchEvent(event!!)
     }
@@ -201,15 +223,9 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
     }
 
     override fun onLongPress(e: MotionEvent) {
-        TODO("Not yet implemented")
     }
 
-    override fun onFling(
-        e1: MotionEvent?,
-        e2: MotionEvent,
-        velocityX: Float,
-        velocityY: Float
-    ): Boolean {
+    override fun onFling(p0: MotionEvent?, p1: MotionEvent, p2: Float, p3: Float): Boolean {
         return true
     }
 }
