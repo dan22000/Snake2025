@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/black"
@@ -11,17 +11,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="32sp"
-        android:textColor="@color/white"
+        android:textColor="@color/colorViolette"
         android:padding="16dp"
-        android:text="Score: 0"/>
+        android:text="@string/score"/>
+
+    <TextView
+        android:id="@+id/highScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:textColor="@color/colorViolette"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_below="@+id/score"
+        android:text="@string/high_score"/>
 
     <com.android.snake2025.SquareLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_centerInParent="true"
         android:orientation="vertical"
         tools:context=".MainActivity">
 
     </com.android.snake2025.SquareLayout>
-</FrameLayout>
+
+    <Button
+        android:id="@+id/retryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/try_again"
+        android:visibility="gone"
+        android:textSize="22sp"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/colorViolette"
+        android:layout_centerInParent="true"/>
+</RelativeLayout>

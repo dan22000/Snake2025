@@ -2,7 +2,6 @@ package com.android.snake2025
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
@@ -12,6 +11,7 @@ import android.os.VibratorManager
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -22,12 +22,18 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
 
     private lateinit var layoutMain: LinearLayout
     private lateinit var gestureDetector: GestureDetector
-    private lateinit var layoutScore: TextView
+    private lateinit var scoreLabel: TextView
+    private lateinit var highScoreLabel: TextView
     private lateinit var vibratorManager: VibratorManager
+    private lateinit var retryButton: Button
 
     private val snakeTiles = mutableListOf<SnakeTile>()
     private val rows: MutableList<LinearLayout> = ArrayList()
     private val tileSize = 20
+
+    private var colorPurpleDark = 0
+    private var colorBlueLight = 0
+    private var colorBlue = 0
 
     private var snakeX = tileSize / 2
     private var snakeY = tileSize / 2
@@ -46,11 +52,31 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        colorBlueLight = getColor(R.color.colorBlueLight)
+        colorBlue = getColor(R.color.colorBlue)
+        colorPurpleDark = getColor(R.color.colorPurpleDark)
         vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
         gestureDetector = GestureDetector(this, this)
-        layoutScore = findViewById(R.id.score)
+        scoreLabel = findViewById(R.id.score)
+        highScoreLabel = findViewById(R.id.highScore)
         layoutMain = findViewById(R.id.main)
         layoutMain.setOnTouchListener(this)
+
+        retryButton = findViewById(R.id.retryButton)
+        retryButton.setOnClickListener{
+            snakeX = tileSize / 2
+            snakeY = tileSize / 2
+            snakeSpeed = 200L
+            snakeLength = 0
+            snakeDirectionX = 0
+            snakeDirectionY = 0
+            score = 0
+            retryButton.visibility = View.GONE
+            snakeTiles.clear()
+            updateScore()
+            assignRandomApplePosition()
+            gameLoop()
+        }
 
         assignRandomApplePosition()
         initBoard()
@@ -73,8 +99,10 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
                     drawBoard()
                     mainHandler.postDelayed(this, snakeSpeed)
                 } else {
+                    retryButton.visibility = View.VISIBLE
                     MediaPlayer.create(baseContext, R.raw.beep).start()
-                    layoutScore.text = String.format(getString(R.string.score_game_over), score.toString())
+                    scoreLabel.text = String.format(getString(R.string.score_game_over), score.toString())
+                    highScoreLabel.text = String.format(getString(R.string.score_game_over), score.toString())
                 }
             }
         })
@@ -91,9 +119,14 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
             if (score % 20 == 0) {
                 snakeSpeed -= 10
             }
+            updateScore()
             vibratorManager.defaultVibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE))
-            layoutScore.text = String.format(getString(R.string.score), score.toString())
         }
+    }
+
+    private fun updateScore() {
+        scoreLabel.text = String.format(getString(R.string.score), score.toString())
+
     }
 
     /**
@@ -101,7 +134,21 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
      */
     private fun assignRandomApplePosition() {
         val random = Random()
-        appleColor = Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256))
+        when (random.nextInt(4)) {
+            0 -> {
+                appleColor = getColor(R.color.colorGreen)
+            }
+            1 -> {
+                appleColor = getColor(R.color.colorOrange)
+            }
+            2 -> {
+                appleColor = getColor(R.color.colorPurple)
+            }
+            3 -> {
+                appleColor = getColor(R.color.colorCyan)
+            }
+        }
+
         appleX = random.nextInt(tileSize)
         appleY = random.nextInt(tileSize)
     }
@@ -136,11 +183,11 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
     private fun drawBoard() {
         for (x in 0 until tileSize) {
             for (y in 0 until tileSize) {
-                var color = getColor(R.color.blue)
+                var color = colorPurpleDark
                 if (x == appleX && y == appleY) {
                     color = appleColor
                 } else if (x == snakeX && y == snakeY) {
-                    color = Color.WHITE
+                    color = colorBlue
                 }
 
                 rows[y].getChildAt(x).setBackgroundColor(color)
@@ -148,7 +195,7 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
         }
 
         for(snakeTile in snakeTiles) {
-            rows[snakeTile.y].getChildAt(snakeTile.x).setBackgroundColor(Color.WHITE)
+            rows[snakeTile.y].getChildAt(snakeTile.x).setBackgroundColor(colorBlueLight)
         }
 
         snakeTiles.add(SnakeTile(snakeX, snakeY))

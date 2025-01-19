@@ -3,4 +3,12 @@
     <color name="blue">#00008B</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="colorGreen">#c2f600</color>
+    <color name="colorOrange">#ffb300</color>
+    <color name="colorPurple">#ff0091</color>
+    <color name="colorCyan">#00b7c6</color>
+    <color name="colorPurpleDark">#2e095d</color>
+    <color name="colorViolette">#dc49ff</color>
+    <color name="colorBlue">#1d58ff</color>
+    <color name="colorBlueLight">#283ea9</color>
 </resources>
