@@ -26,15 +26,16 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
     private lateinit var highScoreLabel: TextView
     private lateinit var vibratorManager: VibratorManager
     private lateinit var retryButton: Button
+    private lateinit var preferences: Preferences
 
     private val snakeTiles = mutableListOf<SnakeTile>()
     private val rows: MutableList<LinearLayout> = ArrayList()
     private val tileSize = 20
+    private val random = Random()
 
     private var colorPurpleDark = 0
     private var colorBlueLight = 0
     private var colorBlue = 0
-
     private var snakeX = tileSize / 2
     private var snakeY = tileSize / 2
     private var snakeSpeed = 200L
@@ -52,6 +53,7 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        preferences = Preferences(this)
         colorBlueLight = getColor(R.color.colorBlueLight)
         colorBlue = getColor(R.color.colorBlue)
         colorPurpleDark = getColor(R.color.colorPurpleDark)
@@ -64,24 +66,39 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
 
         retryButton = findViewById(R.id.retryButton)
         retryButton.setOnClickListener{
-            snakeX = tileSize / 2
-            snakeY = tileSize / 2
-            snakeSpeed = 200L
-            snakeLength = 0
-            snakeDirectionX = 0
-            snakeDirectionY = 0
-            score = 0
-            retryButton.visibility = View.GONE
-            snakeTiles.clear()
-            updateScore()
-            assignRandomApplePosition()
-            gameLoop()
+            retry()
         }
 
-        assignRandomApplePosition()
+        playRandomSound()
         initBoard()
+        startUp()
+    }
+
+    /**
+     * Performs code that resets all game variables to start a new game.
+     */
+    private fun retry() {
+        snakeX = tileSize / 2
+        snakeY = tileSize / 2
+        snakeSpeed = 200L
+        snakeLength = 0
+        snakeDirectionX = 0
+        snakeDirectionY = 0
+        score = 0
+        retryButton.visibility = View.GONE
+        snakeTiles.clear()
+        startUp()
+    }
+
+    /**
+     * Performs code that is needed for each game start.
+     */
+    private fun startUp() {
+        updateScore(false)
+        assignRandomApplePosition()
         gameLoop()
     }
+
 
     /**
      * Performs the main tasks of the game and draws objects.
@@ -99,13 +116,35 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
                     drawBoard()
                     mainHandler.postDelayed(this, snakeSpeed)
                 } else {
+                    playRandomSound()
                     retryButton.visibility = View.VISIBLE
-                    MediaPlayer.create(baseContext, R.raw.beep).start()
-                    scoreLabel.text = String.format(getString(R.string.score_game_over), score.toString())
-                    highScoreLabel.text = String.format(getString(R.string.score_game_over), score.toString())
+                    updateScore(true)
                 }
             }
         })
+    }
+
+    /**
+     * Plays random sound with MediaPlayer.
+     */
+    private fun playRandomSound() {
+        when (random.nextInt(5)) {
+            0 -> {
+                MediaPlayer.create(baseContext, R.raw.sound1).start()
+            }
+            1 -> {
+                MediaPlayer.create(baseContext, R.raw.sound2).start()
+            }
+            2 -> {
+                MediaPlayer.create(baseContext, R.raw.sound3).start()
+            }
+            3 -> {
+                MediaPlayer.create(baseContext, R.raw.sound4).start()
+            }
+            4 -> {
+                MediaPlayer.create(baseContext, R.raw.sound5).start()
+            }
+        }
     }
 
     /**
@@ -119,21 +158,26 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
             if (score % 20 == 0) {
                 snakeSpeed -= 10
             }
-            updateScore()
+            updateScore(false)
             vibratorManager.defaultVibrator.vibrate(VibrationEffect.createOneShot(300, VibrationEffect.DEFAULT_AMPLITUDE))
         }
     }
 
-    private fun updateScore() {
-        scoreLabel.text = String.format(getString(R.string.score), score.toString())
-
+    /**
+     * Updates the score labels.
+     */
+    private fun updateScore(isGameOver: Boolean) {
+        scoreLabel.text = String.format(getString(if (isGameOver) R.string.score_game_over else R.string.score), score.toString())
+        if (score > preferences.getHighScore()) {
+            preferences.setHighScore(score)
+        }
+        highScoreLabel.text = String.format(getString(R.string.high_score), preferences.getHighScore().toString())
     }
 
     /**
      * Assigns the apple a random position on the screen.
      */
     private fun assignRandomApplePosition() {
-        val random = Random()
         when (random.nextInt(4)) {
             0 -> {
                 appleColor = getColor(R.color.colorGreen)
