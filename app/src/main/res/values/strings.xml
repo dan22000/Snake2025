@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Snake2025</string>
     <string name="try_again">Try Again</string>
+    <string name="start_game">Start Game</string>
     <string name="score">Score: %s</string>
     <string name="high_score">High Score: %s</string>
     <string name="score_game_over">Score: %s Game Over!</string>

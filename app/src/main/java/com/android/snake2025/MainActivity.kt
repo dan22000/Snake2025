@@ -2,6 +2,7 @@ package com.android.snake2025
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
@@ -52,6 +53,9 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, GestureDetector.
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val intent = Intent(this, SplashActivity::class.java)
+        startActivity(intent)
 
         preferences = Preferences(this)
         colorBlueLight = getColor(R.color.colorBlueLight)
